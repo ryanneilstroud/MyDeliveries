@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23D56" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="ManagedCache" representedClassName="ManagedCache" syncable="YES">
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="feed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedFeedItem" inverseName="cache" inverseEntity="ManagedFeedItem"/>
+    </entity>
+    <entity name="ManagedFeedItem" representedClassName="ManagedFeedItem" syncable="YES">
+        <attribute name="data" optional="YES" attributeType="Binary"/>
+        <attribute name="deliveryFee" optional="YES" attributeType="String"/>
+        <attribute name="goodsPicture" optional="YES" attributeType="URI"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="remarks" optional="YES" attributeType="String"/>
+        <attribute name="routeEnd" optional="YES" attributeType="String"/>
+        <attribute name="routeStart" optional="YES" attributeType="String"/>
+        <attribute name="senderEmail" optional="YES" attributeType="String"/>
+        <attribute name="senderName" optional="YES" attributeType="String"/>
+        <attribute name="senderPhone" optional="YES" attributeType="String"/>
+        <attribute name="surcharge" optional="YES" attributeType="String"/>
+        <relationship name="cache" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedCache" inverseName="feed" inverseEntity="ManagedCache"/>
+    </entity>
+</model>
