@@ -18,11 +18,10 @@ With more time I would have loved to write more unit tests, as well as integrati
 
 ## Important!
 Because of time constraints I was unable to get `CoreData` and persistence working; instead I have an `InFeedMemoryStore` in its place.
-Additionally the endpoint I was using did not accept an `offset` parameter, as well it returned unspecified objects; I'm not sure if that was by design. I was unable to investigate further, but there is a `RemoteFeedLoaderStub` that will act in its place.
+Additionally the endpoint I was using did not accept an `offset` parameter, as well it returned unspecified objects; I was unable to investigate further, but there is a `RemoteFeedLoaderStub` that will act in its place.
 
 ## Improvements
 There are some things I wish I could have improved on such as:
-- Caching the image data which would make for a much better user experience
 - Error handling
 - Consolidate platform agnostic components into their own module
 
