@@ -9,11 +9,13 @@ import SwiftUI
 
 final class FeedItemUIComposer {
     
-    static func feedItemComposedWith(item: FeedItem, onFavorite: @escaping (FeedItem) -> Void) -> UIHostingController<some View> {
+    static func feedItemComposedWith(item: FeedItem, imageLoader: FeedImageDataLoader, onFavorite: @escaping (FeedItem) -> Void) -> UIHostingController<some View> {
         UIHostingController(
             rootView: FeedItemDetail(
                 viewModel: FeedItemDetailViewModel(
-                    item: item,
+                    item: item, 
+                    imageLoader: MainQueueDispatchDecorator(
+                        decoratee: imageLoader),
                     onTap: onFavorite)))
     }
     

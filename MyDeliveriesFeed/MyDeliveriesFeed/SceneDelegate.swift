@@ -19,7 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //                .appendingPathComponent("feed-store.sqlite"))
 //    }()
 //    
-    private lazy var store: FeedStore = {
+    private let client = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
+    private lazy var store: FeedStore & FeedImageDataStore = {
        InMemoryFeedStore()
     }()
     
@@ -28,7 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return RemoteFeedLoaderStub(
             url: FeedEndpoint.get(offset: offset)
                 .url(baseURL: baseURL),
-            client: URLSessionHTTPClient(session: URLSession(configuration: .ephemeral)))
+            client: client)
     }
     
     private lazy var remoteLoader: FeedLoader = {
@@ -47,20 +48,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 decoratee: localFeedLoader,
                 cache: localFeedLoader))
     }()
+    private lazy var localFeedImageDataLoader: LocalFeedImageDataLoader = {
+        LocalFeedImageDataLoader(store: store)
+    }()
+    private lazy var imageLoaderComposite: FeedImageDataLoader = {
+        FeedImageDataLoaderWithFallbackComposite(
+            primary: localFeedImageDataLoader,
+            fallback: FeedImageDataLoaderCacheDecorator(
+                decoratee: RemoteFeedImageDataLoader(client: client),
+                cache: localFeedImageDataLoader))
+    }()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let _ = (scene as? UIWindowScene) else { return }
         
         let navigation = UINavigationController()
-        
+                
         navigation.set(FeedUIComposer.feedComposedWith(
             feedLoader: FeedLoaderWithFallbackComposite(
                 primary: localLoader,
-                fallback: remoteLoader),
+                fallback: remoteLoader), 
+            imageLoader: imageLoaderComposite,
             feedCache: localFeedLoader,
             navigate: { feedItem, updateItem in
                 navigation.push(FeedItemUIComposer.feedItemComposedWith(
                     item: feedItem,
+                    imageLoader: self.imageLoaderComposite,
                     onFavorite: updateItem))
             }))
         window?.rootViewController = navigation

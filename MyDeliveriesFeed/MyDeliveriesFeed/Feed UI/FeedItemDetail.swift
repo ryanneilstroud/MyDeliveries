@@ -20,14 +20,21 @@ struct FeedItemDetail: View {
             makeTextLabel(description: "To", value: viewModel.toValue)
             VStack {
                 Text(viewModel.remarks)
-                AsyncImage(url: viewModel.goodsPicture) { image in
-                    image
+                if let imageData = viewModel.imageData, let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    ProgressView()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 200)
+                        .clipShape(Rectangle())
                 }
-                .frame(height: 200)
+//                AsyncImage(url: viewModel.goodsPicture) { image in
+//                    image
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                } placeholder: {
+//                    ProgressView()
+//                }
+//                .frame(height: 200)
             }
             .padding()
             makeTextLabel(description: "Delivery Fee", value: viewModel.price)
@@ -37,7 +44,9 @@ struct FeedItemDetail: View {
             }, label: {
                 Text(viewModel.favoriteButtonText)
             })
-        }.padding()
+        }
+        .padding()
+        .onAppear(perform: viewModel.loadImage)
     }
     
     private func makeTextLabel(description: String, value: String) -> some View {

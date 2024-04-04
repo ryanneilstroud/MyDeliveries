@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedItemCell: View {
-    private let viewModel: FeedItemCellViewModel
+    @ObservedObject private var viewModel: FeedItemCellViewModel
     private let onTap: () -> Void
     
     init(viewModel: FeedItemCellViewModel, onTap: @escaping () -> Void) {
@@ -18,15 +18,15 @@ struct FeedItemCell: View {
     
     var body: some View {
         HStack {
-            AsyncImage(url: viewModel.goodsPicture) { image in
-                image
+            if
+                let imageData = viewModel.imageData,
+                let uiImage = UIImage(data: imageData)
+            {
+                Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                     .clipShape(Rectangle())
-            } placeholder: {
-                ProgressView()
-                    .frame(width: 60, height: 60)
             }
             VStack {
                 Text(viewModel.fromValue)

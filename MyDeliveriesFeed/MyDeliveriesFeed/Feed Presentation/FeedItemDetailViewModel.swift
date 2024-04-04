@@ -10,19 +10,18 @@ import Combine
 
 final class FeedItemDetailViewModel: ObservableObject {
     @Published private var item: FeedItem
+    @Published var imageData: Data?
+    private let imageLoader: FeedImageDataLoader
     private let onTap: (FeedItem) -> Void
     
-    init(item: FeedItem, onTap: @escaping (FeedItem) -> Void) {
+    init(item: FeedItem, imageLoader: FeedImageDataLoader, onTap: @escaping (FeedItem) -> Void) {
         self.item = item
+        self.imageLoader = imageLoader
         self.onTap = onTap
     }
     
     var remarks: String {
         "Remarks: \(item.remarks)"
-    }
-    
-    var goodsPicture: URL {
-        item.goodsPicture
     }
     
     var fromValue: String {
@@ -48,5 +47,18 @@ final class FeedItemDetailViewModel: ObservableObject {
     func toggleFavorite() {
         item.favorited = !item.favorited
         onTap(item)
+    }
+    
+    func loadImage() {
+        imageLoader.loadImageData(from: item.goodsPicture) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case let .success(data):
+                imageData = data
+            case .failure:
+                break
+            }
+        }
     }
 }

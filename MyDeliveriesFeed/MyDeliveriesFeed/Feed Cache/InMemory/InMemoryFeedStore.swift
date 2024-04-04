@@ -9,7 +9,7 @@ import Foundation
 
 public class InMemoryFeedStore {
     private var feedCache: CachedFeed?
-//    private var feedImageDataCache = NSCache<NSURL, NSData>()
+    private var feedImageDataCache = NSCache<NSURL, NSData>()
     
     public init() {}
 }
@@ -31,3 +31,16 @@ extension InMemoryFeedStore: FeedStore {
     }
     
 }
+
+extension InMemoryFeedStore: FeedImageDataStore {
+    public func insert(_ data: Data, for url: URL, completion: @escaping (FeedImageDataStore.InsertionResult) -> Void) {
+        feedImageDataCache.setObject(data as NSData, forKey: url as NSURL)
+        completion(.success(()))
+    }
+    
+    public func retrieve(dataForURL url: URL, completion: @escaping (FeedImageDataStore.RetrievalResult) -> Void) {
+        let data = feedImageDataCache.object(forKey: url as NSURL) as Data?
+        completion(.success(data))
+    }
+}
+

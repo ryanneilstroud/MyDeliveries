@@ -14,7 +14,7 @@ final class FeedUIComposer {
     typealias UpdateItem = (FeedItem) -> Void
     typealias Navigation = (FeedItem, @escaping UpdateItem) -> Void
     
-    static func feedComposedWith(feedLoader: FeedLoader, feedCache: FeedCache, navigate: @escaping Navigation) -> UIHostingController<some View> {
+    static func feedComposedWith(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader, feedCache: FeedCache, navigate: @escaping Navigation) -> UIHostingController<some View> {
         let viewModel = FeedItemListViewModel(
             loadFeed: MainQueueDispatchDecorator(
                 decoratee: feedLoader).load)
@@ -28,10 +28,20 @@ final class FeedUIComposer {
             rootView: FeedItemList(
                 viewModel: viewModel,
                 loadCell: { item in
-                    FeedItemCell(
-                        viewModel: .init(item: item),
+                    cellWith(
+                        item: item,
+                        imageLoader: imageLoader,
                         onTap: { navigate(item, update) })
                 }))
+    }
+    
+    private static func cellWith(item: FeedItem, imageLoader: FeedImageDataLoader, onTap: @escaping () -> Void) -> some View {
+        FeedItemCell(
+            viewModel: FeedItemCellViewModel(
+                item: item,
+                imageLoader: MainQueueDispatchDecorator(
+                    decoratee: imageLoader)),
+            onTap: onTap)
     }
     
 }

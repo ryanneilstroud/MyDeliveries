@@ -10,13 +10,14 @@ import Combine
 
 final class FeedItemCellViewModel: ObservableObject {
     private let item: FeedItem
+    private let imageLoader: FeedImageDataLoader
+    @Published var imageData: Data?
     
-    init(item: FeedItem) {
+    init(item: FeedItem, imageLoader: FeedImageDataLoader) {
         self.item = item
-    }
-    
-    var goodsPicture: URL {
-        item.goodsPicture
+        self.imageLoader = imageLoader
+        
+        loadImage()
     }
     
     var fromValue: String {
@@ -33,5 +34,19 @@ final class FeedItemCellViewModel: ObservableObject {
     
     var isFavorited: String {
         item.favorited ? "❤️" : ""
+    }
+    
+    private func loadImage() {
+        _ = imageLoader.loadImageData(from: item.goodsPicture) { [weak self] result in
+            guard let self = self else { return }
+                        
+            switch result {
+            case let .success(data):
+                imageData = data
+            case .failure:
+                print("failed")
+                break
+            }
+        }
     }
 }
