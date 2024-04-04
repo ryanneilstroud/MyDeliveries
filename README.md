@@ -12,7 +12,7 @@ While not 100% complete, I hope this gives insight into how the app is structure
 ![Architecture](architecture.png)
 
 ## Tests
-Unfortunately I didn't have time to write tests, you'll find test for `URLSessionHTTPClient`  and use case tests for `RemoteFeedLoader`.
+Unfortunately I didn't have time to write most tests, but you'll find tests for `URLSessionHTTPClient`  and use case tests for `RemoteFeedLoader`.
 
 With more time I would have loved to write more unit tests, as well as integration, snapshot, end-to-end. I avoid UI tests when possible opting to reduce test times; instead I opt for programmatically interacting with `UIView`s or using frameworks like `ViewInspector` when using SwiftUI.
 
@@ -22,6 +22,7 @@ Additionally the endpoint I was using did not accept an `offset` parameter, as w
 
 ## Improvements
 There are some things I wish I could have improved on such as:
+- Complete test suite
 - Error handling
 - Consolidate platform agnostic components into their own module
 
